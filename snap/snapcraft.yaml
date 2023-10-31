@@ -105,8 +105,8 @@ parts:
       cp build/* $SNAPCRAFT_PART_INSTALL/static/ || :
     build-packages:
       - curl
-      - python-minimal
-      - python-dev
+      - python2-minimal
+      - python2-dev
 
 
   pylxd:
