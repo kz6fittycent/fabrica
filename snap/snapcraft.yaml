@@ -82,32 +82,27 @@ apps:
 
 parts:
   react:
-    plugin: nil
-    source: .
+    plugin: npm
+    npm-node-version: 20.9.0
+    source: .    
     override-build: |
-      # Install node and npm
-      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
-      export NVM_DIR="$HOME/.nvm"
-      . "$NVM_DIR/nvm.sh"
-      . "$NVM_DIR/bash_completion"
-
-      nvm install --lts
-      nvm run node --version
-
       cd webapp
       npm install --unsafe-perm
       npm run build
-
       mkdir -p $SNAPCRAFT_PART_INSTALL/static/
       cp -r build/static/css $SNAPCRAFT_PART_INSTALL/static/
       cp -r build/static/js $SNAPCRAFT_PART_INSTALL/static/
       cp -r build/static/images $SNAPCRAFT_PART_INSTALL/static/
       cp build/* $SNAPCRAFT_PART_INSTALL/static/ || :
+    
     build-packages:
       - curl
       - python2-minimal
       - python2-dev
-
+      - libc6
+      - gcc
+    build-snaps:
+      - node/20/stable
 
   pylxd:
     plugin: python
