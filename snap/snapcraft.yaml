@@ -1,7 +1,7 @@
 name: fabrica
-base: core18
-version: '1.1.0'
-summary: your own snap build factory
+base: core20
+version: '1.1.1'
+summary: Your own snap build factory
 description: |
   Fabrica is a web service to be run on an lxd appliance. It spawns a
   web ui that allows you to point to cloneable git trees, initializes
@@ -38,6 +38,7 @@ description: |
 
 grade: stable
 confinement: strict
+license: AGPL-3.0
 
 architectures:
   - build-on: armhf
