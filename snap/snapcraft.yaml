@@ -1,6 +1,6 @@
 name: fabrica
-base: core20
-version: '1.1.1'
+base: core24
+version: '1.1.2'
 summary: Your own snap build factory
 description: |
   Fabrica is a web service to be run on an lxd appliance. It spawns a
@@ -40,12 +40,22 @@ grade: stable
 confinement: strict
 license: AGPL-3.0
 
-architectures:
-  - build-on: armhf
-  - build-on: arm64
-  - build-on: amd64
-  - build-on: s390x
-  - build-on: ppc64el
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+  arm64:
+    build-on: [arm64]
+    build-for: [arm64]
+  armhf:
+    build-on: [armhf]
+    build-for: [armhf]
+  ppc64el:
+    build-on: [ppc64el]
+    build-for: [ppc64el]
+  s390x:
+    build-on: [s390x]
+    build-for: [s390x]
 
 layout:
   /etc/ssh:
@@ -84,21 +94,22 @@ parts:
   react:
     plugin: npm
     npm-node-version: 20.9.0
+    npm-include-node: true
     source: .    
     override-build: |
       cd webapp
       npm install --unsafe-perm
       npm run build
-      mkdir -p $SNAPCRAFT_PART_INSTALL/static/
-      cp -r build/static/css $SNAPCRAFT_PART_INSTALL/static/
-      cp -r build/static/js $SNAPCRAFT_PART_INSTALL/static/
-      cp -r build/static/images $SNAPCRAFT_PART_INSTALL/static/
-      cp build/* $SNAPCRAFT_PART_INSTALL/static/ || :
+      mkdir -p $CRAFT_PART_INSTALL/static/
+      cp -r build/static/css $CRAFT_PART_INSTALL/static/
+      cp -r build/static/js $CRAFT_PART_INSTALL/static/
+      cp -r build/static/images $CRAFT_PART_INSTALL/static/
+      cp build/* $CRAFT_PART_INSTALL/static/ || :
     
     build-packages:
       - curl
-      - python2-minimal
-      - python2-dev
+      - python3-minimal
+      - python3-dev
       - libc6
       - gcc
     build-snaps:
@@ -106,6 +117,8 @@ parts:
 
   pylxd:
     plugin: python
+    source: https://github.com/canonical/pylxd
+    source-type: git
     python-packages:
       - cryptography == 3.3.2
       - pylxd
@@ -117,11 +130,11 @@ parts:
     plugin: nil
     override-build: |
       snapcraftctl build
-      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
-      cp bin/init.py $SNAPCRAFT_PART_INSTALL/bin/
+      mkdir -p $CRAFT_PART_INSTALL/bin
+      cp bin/init.py $CRAFT_PART_INSTALL/bin/
 
-      cp -r ssh/ $SNAPCRAFT_PART_INSTALL
-      chmod 644 $SNAPCRAFT_PART_INSTALL/ssh/*
+      cp -r ssh/ $CRAFT_PART_INSTALL
+      chmod 644 $CRAFT_PART_INSTALL/ssh/*
 
   application:
     plugin: go
